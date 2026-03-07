@@ -6,40 +6,36 @@ import {
     TextInput,
     ScrollView,
     SafeAreaView,
+    Pressable,
 } from 'react-native';
-import { router } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { useNotes } from '@/providers/NoteProvider';
 import { BouncyButton } from '@/components/BouncyButton';
-import { SpiralBoundCard } from '@/components/SpiralBoundCard';
-import { colors, spacing, fontSizes } from '@/constants/theme';
-import type { CardColor } from '@/types';
+import { colors, spacing, fontSizes, borderRadius } from '@/constants/theme';
 import { X } from 'lucide-react-native';
-import * as Haptics from 'expo-haptics';
+import type { CardColor } from '@/types';
 
-const colorOptions: { color: CardColor; label: string }[] = [
-    { color: 'lilac', label: 'Lilac' },
-    { color: 'mint', label: 'Mint' },
-    { color: 'bubblegum', label: 'Pink' },
-    { color: 'peach', label: 'Peach' },
-    { color: 'sky', label: 'Sky' },
+const colorOptions: { color: CardColor; hex: string }[] = [
+    { color: 'lilac', hex: colors.lilac },
+    { color: 'mint', hex: colors.mint },
+    { color: 'bubblegum', hex: colors.bubblegum },
+    { color: 'peach', hex: colors.peach },
+    { color: 'sky', hex: colors.sky },
 ];
 
-export default function CreateNoteScreen() {
-    const insets = useSafeAreaInsets();
+export default function NewNoteScreen() {
+    const router = useRouter();
     const { addNote } = useNotes();
 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-    const [selectedColor, setSelectedColor] = useState<CardColor>('peach');
+    const [selectedColor, setSelectedColor] = useState<CardColor>('sky');
 
     const handleSave = async () => {
         if (!content.trim()) return;
 
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-
         await addNote({
-            title: title.trim() || 'Untitled Note',
+            title: title.trim(),
             content: content.trim(),
             color: selectedColor,
         });
@@ -48,96 +44,75 @@ export default function CreateNoteScreen() {
     };
 
     return (
-        <SafeAreaView style={[styles.container, { paddingTop: insets.top }]}>
-            <View style={styles.header}>
-                <Text style={styles.headerTitle}>New Note</Text>
-                <BouncyButton
-                    color="peach"
-                    size="small"
-                    onPress={() => router.back()}
-                >
-                    <X size={24} color={colors.black} />
-                </BouncyButton>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.topBar}>
+                <Text style={styles.screenTitle}>New Note</Text>
+                <Pressable onPress={() => router.back()} hitSlop={12}>
+                    <X size={28} color={colors.black} strokeWidth={3} />
+                </Pressable>
             </View>
 
             <ScrollView
                 style={styles.scrollView}
-                contentContainerStyle={styles.scrollContent}
+                contentContainerStyle={styles.content}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
             >
-                <SpiralBoundCard color={selectedColor} animatePress={false}>
-                    <View style={styles.formSection}>
-                        <Text style={styles.label}>Title (Optional)</Text>
-                        <TextInput
-                            style={styles.titleInput}
-                            placeholder="Give your note a title..."
-                            placeholderTextColor={colors.gray}
-                            value={title}
-                            onChangeText={setTitle}
-                            maxLength={100}
-                        />
-                    </View>
+                {/* Title */}
+                <Text style={styles.label}>TITLE</Text>
+                <TextInput
+                    style={styles.input}
+                    value={title}
+                    onChangeText={setTitle}
+                    placeholder="Note title (optional)"
+                    placeholderTextColor={colors.gray}
+                />
 
-                    <View style={styles.formSection}>
-                        <Text style={styles.label}>Your Note</Text>
-                        <TextInput
-                            style={styles.contentInput}
-                            placeholder="Start writing your thoughts here..."
-                            placeholderTextColor={colors.gray}
-                            value={content}
-                            onChangeText={setContent}
-                            multiline
-                            numberOfLines={10}
-                            maxLength={2000}
-                            textAlignVertical="top"
-                            autoFocus
-                        />
-                    </View>
-                </SpiralBoundCard>
+                {/* Content */}
+                <Text style={styles.label}>CONTENT *</Text>
+                <TextInput
+                    style={[styles.input, styles.textArea]}
+                    value={content}
+                    onChangeText={setContent}
+                    placeholder="Write your note here..."
+                    placeholderTextColor={colors.gray}
+                    multiline
+                    numberOfLines={8}
+                    textAlignVertical="top"
+                    autoFocus
+                />
 
-                <Text style={styles.sectionTitle}>Note Color</Text>
-                <View style={styles.colorGrid}>
-                    {colorOptions.map((option) => (
-                        <BouncyButton
+                {/* Color */}
+                <Text style={styles.label}>COLOR</Text>
+                <View style={styles.colorRow}>
+                    {colorOptions.map(option => (
+                        <Pressable
                             key={option.color}
-                            color={option.color}
-                            size="small"
-                            onPress={() => {
-                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                                setSelectedColor(option.color);
-                            }}
+                            onPress={() => setSelectedColor(option.color)}
                             style={[
-                                styles.colorButton,
-                                selectedColor === option.color ? styles.colorButtonSelected : null,
-                            ] as any}
-                        >
-                            <Text style={styles.colorLabel}>{option.label}</Text>
-                        </BouncyButton>
+                                styles.colorDot,
+                                { backgroundColor: option.hex },
+                                selectedColor === option.color ? styles.colorDotSelected : null,
+                            ]}
+                        />
                     ))}
                 </View>
 
-                <View style={styles.previewSection}>
-                    <Text style={styles.sectionTitle}>Preview</Text>
-                    <View style={styles.previewCard}>
-                        <Text style={styles.previewTitle}>
-                            {title || 'Untitled Note'}
-                        </Text>
-                        <Text style={styles.previewContent} numberOfLines={3}>
-                            {content || 'Your note content will appear here...'}
-                        </Text>
-                    </View>
+                {/* Save Button */}
+                <View style={styles.saveWrapper}>
+                    <BouncyButton
+                        onPress={handleSave}
+                        color={selectedColor}
+                        size="large"
+                        disabled={!content.trim()}
+                        style={[
+                            styles.saveButton,
+                            !content.trim() ? styles.saveDisabled : null,
+                        ] as any}
+                    >
+                        <Text style={styles.saveText}>Save Note</Text>
+                    </BouncyButton>
                 </View>
-
-                <BouncyButton
-                    color="mint"
-                    size="large"
-                    onPress={handleSave}
-                    style={[
-                        styles.saveButton,
-                        !content.trim() ? styles.saveButtonDisabled : null,
-                    ] as any}
-                >
-                    <Text style={styles.saveButtonText}>Save Note</Text>
-                </BouncyButton>
             </ScrollView>
         </SafeAreaView>
     );
@@ -148,114 +123,79 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.cream,
     },
-    header: {
+    topBar: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingHorizontal: spacing.lg,
-        paddingVertical: spacing.md,
+        paddingTop: spacing.lg,
+        paddingBottom: spacing.md,
     },
-    headerTitle: {
-        fontSize: fontSizes.xxl,
-        fontWeight: '900',
+    screenTitle: {
+        fontSize: 28,
+        fontWeight: '900' as const,
         color: colors.black,
+        letterSpacing: -0.5,
     },
     scrollView: {
         flex: 1,
     },
-    scrollContent: {
+    content: {
         paddingHorizontal: spacing.lg,
         paddingBottom: spacing.xxl,
     },
-    formSection: {
-        marginBottom: spacing.md,
-    },
     label: {
-        fontSize: fontSizes.sm,
-        fontWeight: '700',
-        color: colors.ink,
-        marginBottom: spacing.xs,
-        textTransform: 'uppercase',
-        letterSpacing: 0.5,
-    },
-    titleInput: {
-        fontSize: fontSizes.lg,
-        fontWeight: '700',
-        color: colors.black,
-        padding: spacing.sm,
-        backgroundColor: colors.white,
-        borderRadius: 8,
-        borderWidth: 2,
-        borderColor: colors.black,
-    },
-    contentInput: {
-        fontSize: fontSizes.md,
-        color: colors.ink,
-        padding: spacing.sm,
-        backgroundColor: colors.white,
-        borderRadius: 8,
-        borderWidth: 2,
-        borderColor: colors.black,
-        minHeight: 200,
-        lineHeight: 24,
-    },
-    sectionTitle: {
-        fontSize: fontSizes.md,
-        fontWeight: '800',
-        color: colors.ink,
-        marginTop: spacing.lg,
-        marginBottom: spacing.sm,
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-    },
-    colorGrid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: spacing.sm,
-    },
-    colorButton: {
-        flex: 1,
-        minWidth: 60,
-    },
-    colorButtonSelected: {
-        borderWidth: 4,
-    },
-    colorLabel: {
         fontSize: fontSizes.xs,
-        fontWeight: '800',
-        color: colors.black,
+        fontWeight: '800' as const,
+        color: colors.gray,
+        letterSpacing: 2,
+        marginBottom: spacing.sm,
+        marginTop: spacing.lg,
     },
-    previewSection: {
-        marginTop: spacing.md,
-    },
-    previewCard: {
-        backgroundColor: colors.paper,
-        borderRadius: 12,
+    input: {
+        backgroundColor: colors.white,
         borderWidth: 3,
         borderColor: colors.black,
-        padding: spacing.md,
-    },
-    previewTitle: {
-        fontSize: fontSizes.lg,
-        fontWeight: '900',
-        color: colors.black,
-        marginBottom: spacing.sm,
-    },
-    previewContent: {
+        borderRadius: borderRadius.md,
+        paddingHorizontal: spacing.md,
+        paddingVertical: spacing.sm + 4,
         fontSize: fontSizes.md,
-        color: colors.ink,
-        lineHeight: 22,
+        fontWeight: '600' as const,
+        color: colors.black,
+    },
+    textArea: {
+        minHeight: 200,
+        paddingTop: spacing.sm + 4,
+        lineHeight: 26,
+    },
+    colorRow: {
+        flexDirection: 'row',
+        gap: spacing.md,
+    },
+    colorDot: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        borderWidth: 3,
+        borderColor: colors.lightGray,
+    },
+    colorDotSelected: {
+        borderColor: colors.black,
+        borderWidth: 4,
+    },
+    saveWrapper: {
+        marginTop: spacing.xl,
     },
     saveButton: {
-        marginTop: spacing.xl,
-        marginBottom: spacing.lg,
+        width: '100%',
     },
-    saveButtonDisabled: {
-        opacity: 0.5,
+    saveDisabled: {
+        opacity: 0.4,
     },
-    saveButtonText: {
+    saveText: {
         fontSize: fontSizes.lg,
-        fontWeight: '900',
+        fontWeight: '800' as const,
         color: colors.black,
+        letterSpacing: 0.5,
     },
 });

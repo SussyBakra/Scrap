@@ -5,21 +5,20 @@ import {
     StyleSheet,
     type PressableProps,
     type ViewStyle,
-    type TextStyle,
 } from 'react-native';
-import { colors, borders, borderRadius, spacing } from '@/constants/theme';
+import { colors, borderRadius, spacing } from '@/constants/theme';
 import * as Haptics from 'expo-haptics';
+import type { CardColor } from '@/types';
 
 interface BouncyButtonProps extends PressableProps {
     children: React.ReactNode;
-    variant?: 'primary' | 'secondary' | 'ghost';
-    color?: 'lilac' | 'mint' | 'bubblegum' | 'peach' | 'sky';
+    color?: CardColor;
+    variant?: 'filled' | 'ghost' | 'fab';
     size?: 'small' | 'medium' | 'large';
     style?: ViewStyle;
-    textStyle?: TextStyle;
 }
 
-const colorMap = {
+const colorMap: Record<CardColor, string> = {
     lilac: colors.lilac,
     mint: colors.mint,
     bubblegum: colors.bubblegum,
@@ -29,8 +28,8 @@ const colorMap = {
 
 export const BouncyButton: React.FC<BouncyButtonProps> = ({
     children,
-    variant = 'primary',
-    color = 'lilac',
+    color = 'mint',
+    variant = 'filled',
     size = 'medium',
     style,
     onPressIn,
@@ -38,62 +37,37 @@ export const BouncyButton: React.FC<BouncyButtonProps> = ({
     ...props
 }) => {
     const scaleAnim = useRef(new Animated.Value(1)).current;
-    const shadowAnim = useRef(new Animated.Value(1)).current;
 
     const handlePressIn = (e: any) => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-
-        Animated.parallel([
-            Animated.spring(scaleAnim, {
-                toValue: 0.92,
-                useNativeDriver: true,
-                friction: 5,
-                tension: 200,
-            }),
-            Animated.timing(shadowAnim, {
-                toValue: 0,
-                duration: 100,
-                useNativeDriver: true,
-            }),
-        ]).start();
-
+        Animated.spring(scaleAnim, {
+            toValue: 0.93,
+            useNativeDriver: true,
+            friction: 5,
+            tension: 200,
+        }).start();
         onPressIn?.(e);
     };
 
     const handlePressOut = (e: any) => {
-        Animated.parallel([
-            Animated.spring(scaleAnim, {
-                toValue: 1,
-                useNativeDriver: true,
-                friction: 3,
-                tension: 400,
-            }),
-            Animated.spring(shadowAnim, {
-                toValue: 1,
-                useNativeDriver: true,
-                friction: 3,
-                tension: 400,
-            }),
-        ]).start();
-
+        Animated.spring(scaleAnim, {
+            toValue: 1,
+            useNativeDriver: true,
+            friction: 3,
+            tension: 400,
+        }).start();
         onPressOut?.(e);
     };
 
-    const getBackgroundColor = () => {
-        if (variant === 'ghost') return 'transparent';
-        return colorMap[color];
-    };
+    const sizeStyles: ViewStyle = size === 'small'
+        ? { paddingVertical: spacing.xs, paddingHorizontal: spacing.md }
+        : size === 'large'
+            ? { paddingVertical: spacing.md, paddingHorizontal: spacing.xl }
+            : { paddingVertical: spacing.sm, paddingHorizontal: spacing.lg };
 
-    const getSizeStyles = (): ViewStyle => {
-        switch (size) {
-            case 'small':
-                return { paddingVertical: spacing.xs, paddingHorizontal: spacing.md };
-            case 'large':
-                return { paddingVertical: spacing.md, paddingHorizontal: spacing.xl };
-            default:
-                return { paddingVertical: spacing.sm, paddingHorizontal: spacing.lg };
-        }
-    };
+    const fabStyles: ViewStyle = variant === 'fab'
+        ? { width: 56, height: 56, borderRadius: 28, paddingVertical: 0, paddingHorizontal: 0 }
+        : {};
 
     return (
         <Pressable
@@ -103,36 +77,22 @@ export const BouncyButton: React.FC<BouncyButtonProps> = ({
         >
             <Animated.View
                 style={[
-                    styles.container,
-                    {
-                        backgroundColor: getBackgroundColor(),
-                        transform: [{ scale: scaleAnim }],
-                    },
-                    getSizeStyles(),
-                    variant !== 'ghost' && styles.withShadow,
-                    style,
+                    styles.wrapper,
+                    { transform: [{ scale: scaleAnim }] },
                 ]}
             >
+                {variant !== 'ghost' && <Animated.View style={styles.shadow} />}
                 <Animated.View
                     style={[
-                        styles.shadow,
-                        {
-                            opacity: shadowAnim,
-                            transform: [{
-                                translateX: shadowAnim.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [1, 4],
-                                }),
-                            }, {
-                                translateY: shadowAnim.interpolate({
-                                    inputRange: [0, 1],
-                                    outputRange: [1, 4],
-                                }),
-                            }],
-                        },
+                        styles.button,
+                        variant === 'ghost'
+                            ? styles.ghost
+                            : { backgroundColor: colorMap[color] },
+                        sizeStyles,
+                        fabStyles,
+                        style,
                     ]}
-                />
-                <Animated.View style={styles.content}>
+                >
                     {children}
                 </Animated.View>
             </Animated.View>
@@ -141,30 +101,27 @@ export const BouncyButton: React.FC<BouncyButtonProps> = ({
 };
 
 const styles = StyleSheet.create({
-    container: {
-        borderRadius: borderRadius.medium,
-        borderWidth: 3,
-        borderColor: colors.black,
+    wrapper: {
         position: 'relative',
-    },
-    withShadow: {
-        marginBottom: 4,
-        marginRight: 4,
     },
     shadow: {
         position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        top: 3,
+        left: 3,
+        right: -3,
+        bottom: -3,
         backgroundColor: colors.black,
-        borderRadius: borderRadius.medium,
+        borderRadius: borderRadius.md,
+    },
+    button: {
+        borderRadius: borderRadius.md,
         borderWidth: 3,
         borderColor: colors.black,
-        zIndex: -1,
-    },
-    content: {
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    ghost: {
+        backgroundColor: 'transparent',
+        borderWidth: 0,
     },
 });

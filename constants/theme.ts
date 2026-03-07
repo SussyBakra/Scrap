@@ -1,82 +1,52 @@
 export { fontSizes } from './fonts';
 
 export const colors = {
-    // Paper & Background
-    cream: '#FAF7F0',
-    creamDark: '#F5F0E6',
-    paper: '#FFFEF9',
+    // Background
+    cream: '#FBF8F1',
+    paper: '#FFFFFF',
 
-    // Neo-Brutalist Black
-    black: '#000000',
-    ink: '#1A1A1A',
+    // Core
+    black: '#1A1A1A',
+    ink: '#333333',
 
-    // Pastel Accents
-    lilac: '#D4BBF7',
-    lilacDark: '#B8A0E0',
-    mint: '#A8E6CF',
-    mintDark: '#8CD4B0',
-    bubblegum: '#FFB7D5',
-    bubblegumDark: '#FF9FC5',
-    peach: '#FFDAB3',
-    peachDark: '#FFC999',
-    sky: '#B3E5FC',
-    skyDark: '#90D4F0',
+    // Pastels (used as accent fills)
+    lilac: '#D8C8F5',
+    mint: '#B5EAD7',
+    bubblegum: '#FFBED0',
+    peach: '#FFDAB9',
+    sky: '#B8DFF9',
 
     // Functional
     white: '#FFFFFF',
-    gray: '#888888',
-    lightGray: '#DDDDDD',
+    gray: '#8E8E93',
+    lightGray: '#E5E5EA',
+    border: '#1A1A1A',
+
+    // Priority
+    priorityHigh: '#FF6B6B',
+    priorityMed: '#FFB347',
+    priorityLow: '#77DD77',
 
     // Status
-    success: '#7FD8A8',
-    warning: '#FFD966',
-    error: '#FF8A8A',
+    success: '#4CD964',
+    error: '#FF3B30',
+    warning: '#FF9500',
 } as const;
 
 export const shadows = {
-    // Hard Neo-Brutalist Shadows
-    small: {
-        shadowColor: colors.black,
-        shadowOffset: { width: 3, height: 3 },
-        shadowOpacity: 1,
-        shadowRadius: 0,
-        elevation: 6,
-    },
-    medium: {
-        shadowColor: colors.black,
+    brutal: {
+        shadowColor: '#000000',
         shadowOffset: { width: 4, height: 4 },
         shadowOpacity: 1,
         shadowRadius: 0,
         elevation: 8,
     },
-    large: {
-        shadowColor: colors.black,
-        shadowOffset: { width: 6, height: 6 },
+    small: {
+        shadowColor: '#000000',
+        shadowOffset: { width: 2, height: 2 },
         shadowOpacity: 1,
         shadowRadius: 0,
-        elevation: 12,
-    },
-    pressed: {
-        shadowColor: colors.black,
-        shadowOffset: { width: 1, height: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 0,
-        elevation: 2,
-    },
-} as const;
-
-export const borders = {
-    thick: {
-        borderWidth: 3,
-        borderColor: colors.black,
-    },
-    medium: {
-        borderWidth: 2,
-        borderColor: colors.black,
-    },
-    thin: {
-        borderWidth: 1,
-        borderColor: colors.black,
+        elevation: 4,
     },
 } as const;
 
@@ -90,9 +60,10 @@ export const spacing = {
 } as const;
 
 export const borderRadius = {
-    small: 4,
-    medium: 8,
-    large: 12,
+    sm: 4,
+    md: 8,
+    lg: 12,
+    xl: 16,
     round: 9999,
 } as const;
 

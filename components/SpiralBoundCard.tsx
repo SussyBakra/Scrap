@@ -85,7 +85,6 @@ export const SpiralBoundCard: React.FC<SpiralBoundCardProps> = ({
     const renderSpiralRings = () => {
         const rings = [];
         const ringCount = 5;
-        const spacingBetween = 56;
 
         for (let i = 0; i < ringCount; i++) {
             rings.push(

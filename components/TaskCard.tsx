@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Animated } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { SpiralBoundCard } from './SpiralBoundCard';
 import { MarkerScribble } from './MarkerScribble';
 import { colors, spacing, fontSizes } from '@/constants/theme';

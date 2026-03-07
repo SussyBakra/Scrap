@@ -7,7 +7,7 @@ import {
     type ViewStyle,
     type TextStyle,
 } from 'react-native';
-import { colors, shadows, borders, borderRadius, spacing } from '@/constants/theme';
+import { colors, borders, borderRadius, spacing } from '@/constants/theme';
 import * as Haptics from 'expo-haptics';
 
 interface BouncyButtonProps extends PressableProps {

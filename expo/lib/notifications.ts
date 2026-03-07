@@ -7,6 +7,8 @@ Notifications.setNotificationHandler({
         shouldShowAlert: true,
         shouldPlaySound: true,
         shouldSetBadge: false,
+        shouldShowBanner: true,
+        shouldShowList: true,
     }),
 });
 
@@ -46,7 +48,10 @@ export async function scheduleTaskNotification(task: Task): Promise<string | nul
             body: task.title,
             data: { taskId: task.id },
         },
-        trigger: dueDate,
+        trigger: {
+            type: Notifications.SchedulableTriggerInputTypes.DATE,
+            date: dueDate,
+        },
     });
 
     return notificationId;

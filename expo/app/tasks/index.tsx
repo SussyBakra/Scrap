@@ -96,8 +96,8 @@ export default function TasksScreen() {
                             }}
                             style={[
                                 styles.dayButton,
-                                isSelected && styles.dayButtonSelected,
-                            ]}
+                                isSelected ? styles.dayButtonSelected : null,
+                            ] as any}
                         >
                             <Text
                                 style={[
@@ -169,8 +169,8 @@ export default function TasksScreen() {
                         }}
                         style={[
                             styles.viewButton,
-                            view === v && styles.viewButtonActive,
-                        ]}
+                            view === v ? styles.viewButtonActive : null,
+                        ] as any}
                     >
                         <Text
                             style={[

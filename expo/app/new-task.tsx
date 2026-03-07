@@ -148,8 +148,8 @@ export default function CreateTaskScreen() {
                             }}
                             style={[
                                 styles.colorButton,
-                                selectedColor === option.color && styles.colorButtonSelected,
-                            ]}
+                                selectedColor === option.color ? styles.colorButtonSelected : null,
+                            ] as any}
                         >
                             <Text style={styles.colorLabel}>{option.label}</Text>
                         </BouncyButton>
@@ -169,8 +169,8 @@ export default function CreateTaskScreen() {
                             }}
                             style={[
                                 styles.optionButton,
-                                priority === option.value && styles.optionButtonSelected,
-                            ]}
+                                priority === option.value ? styles.optionButtonSelected : null,
+                            ] as any}
                         >
                             <Flag size={14} color={colors.black} />
                             <Text style={styles.optionText}>{option.label}</Text>
@@ -232,8 +232,8 @@ export default function CreateTaskScreen() {
                             }}
                             style={[
                                 styles.optionButton,
-                                recurrence === option.value && styles.optionButtonSelected,
-                            ]}
+                                recurrence === option.value ? styles.optionButtonSelected : null,
+                            ] as any}
                         >
                             <Repeat size={14} color={colors.black} />
                             <Text style={styles.optionText}>{option.label}</Text>
@@ -247,8 +247,8 @@ export default function CreateTaskScreen() {
                     onPress={handleSave}
                     style={[
                         styles.saveButton,
-                        !title.trim() && styles.saveButtonDisabled,
-                    ]}
+                        !title.trim() ? styles.saveButtonDisabled : null,
+                    ] as any}
                 >
                     <Text style={styles.saveButtonText}>Create Task</Text>
                 </BouncyButton>

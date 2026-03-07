@@ -107,8 +107,8 @@ export default function CreateNoteScreen() {
                             }}
                             style={[
                                 styles.colorButton,
-                                selectedColor === option.color && styles.colorButtonSelected,
-                            ]}
+                                selectedColor === option.color ? styles.colorButtonSelected : null,
+                            ] as any}
                         >
                             <Text style={styles.colorLabel}>{option.label}</Text>
                         </BouncyButton>
@@ -133,8 +133,8 @@ export default function CreateNoteScreen() {
                     onPress={handleSave}
                     style={[
                         styles.saveButton,
-                        !content.trim() && styles.saveButtonDisabled,
-                    ]}
+                        !content.trim() ? styles.saveButtonDisabled : null,
+                    ] as any}
                 >
                     <Text style={styles.saveButtonText}>Save Note</Text>
                 </BouncyButton>

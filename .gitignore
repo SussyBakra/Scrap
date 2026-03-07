@@ -1,0 +1,16 @@
+# Root-level gitignore
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Dependencies (ignore at project level too)
+node_modules/

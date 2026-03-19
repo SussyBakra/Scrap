@@ -33,6 +33,12 @@
     "scheme": "scraps",
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c9b2ecad-48fc-4ea6-9386-f5be66c38442"
+      }
     }
   }
 }
